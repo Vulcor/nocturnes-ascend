@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { validationSchema } from './validation.schema';
+import { APP_FILTER } from '@nestjs/core';
+import { ExceptionsFilter } from './core/filters/exceptions.filter';
 
 @Module({
   imports: [
@@ -11,7 +11,12 @@ import { validationSchema } from './validation.schema';
       isGlobal: true,
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: ExceptionsFilter,
+    },
+  ],
 })
 export class AppModule {}
