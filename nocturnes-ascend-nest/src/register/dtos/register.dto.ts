@@ -11,6 +11,9 @@ export class RegisterDto {
   @IsString()
   @MinLength(8)
   @IsDefined()
-  @IsStrongPassword({ minSymbols: 1 }, { message: 'password must contain a special character.' })
+  @IsStrongPassword(
+    { minLowercase: 1, minUppercase: 1, minSymbols: 1 },
+    { message: 'password must contain a lowercase letter, uppercase letter and a special character.' },
+  )
   password: string;
 }

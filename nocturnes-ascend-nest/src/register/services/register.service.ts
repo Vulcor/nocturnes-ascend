@@ -4,11 +4,11 @@ import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common
 // @core
 import { UserExistsException } from 'src/core/exceptions';
 
-// @DI
-import { CryptoService } from 'src/encription/services';
+// DI
+import { UserRepository } from 'src/dal/mongoDB/repositories/user.repository';
+import { BcryptService } from 'src/encription/services';
 
 import { UserDocument, UserDocumentSafe } from 'src/dal';
-import { UserRepository } from 'src/dal/mongoDB/repositories/user.repository';
 
 @Injectable()
 export class RegisterService {
@@ -16,7 +16,7 @@ export class RegisterService {
 
   public constructor(
     private readonly userRepository: UserRepository,
-    private readonly cryptoService: CryptoService,
+    private readonly bcryptService: BcryptService,
   ) {}
 
   public async registerViaEmail(email: string, password: string): Promise<UserDocumentSafe> {
@@ -28,11 +28,8 @@ export class RegisterService {
         throw new UserExistsException(email);
       }
 
-      newUser = await this.userRepository.create({ email });
-
-      newUser.password = await this.cryptoService.hashPassword(newUser.id, password);
-
-      await newUser.save();
+      const hashedPassword = await this.bcryptService.hashPassword(password);
+      newUser = await this.userRepository.create({ email, password: hashedPassword });
 
       return newUser;
     } catch (err) {
