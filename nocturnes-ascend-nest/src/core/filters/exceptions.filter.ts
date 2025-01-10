@@ -1,10 +1,4 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  Logger,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Logger } from '@nestjs/common';
 import { Response } from 'express';
 import { ErrorCode, strings } from '..';
 
@@ -14,7 +8,6 @@ export class ExceptionsFilter implements ExceptionFilter {
 
   catch(exception: HttpException, host: ArgumentsHost) {
     this.logger.error(exception);
-    console.log(exception);
 
     let status = 500;
     let errorMessage: string = strings.errors[ErrorCode.INTERNAL_SERVER_ERROR];
